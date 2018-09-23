@@ -5,6 +5,9 @@ import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Button from "@material-ui/core/Button";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
 // mui icons
 import IconButton from "@material-ui/core/IconButton";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
@@ -32,11 +35,15 @@ class ImageResults extends Component {
     currentImg: ""
   };
 
-  handleClose = e => {};
+  // show dialog
+  handleOpen = img => this.setState({ open: true, currentImg: img });
+
+  // close dialog
+  handleClose = () => this.setState({ open: false });
 
   render() {
     const { classes, images } = this.props;
-    const open = this.state;
+    const { open, currentImg } = this.state;
 
     let imageListContent;
 
@@ -54,7 +61,9 @@ class ImageResults extends Component {
                   </span>
                 }
                 actionIcon={
-                  <IconButton>
+                  <IconButton
+                    onClick={() => this.handleOpen(img.largeImageURL)}
+                  >
                     <ZoomInIcon className={classes.icon} />
                   </IconButton>
                 }
@@ -68,10 +77,22 @@ class ImageResults extends Component {
       // spinner
     }
 
-    // dialog actions
-    const actions = <Button label={"Close"} onClick={this.handleClose} />;
-
-    return <Fragment>{imageListContent}</Fragment>;
+    return (
+      <Fragment>
+        {imageListContent}
+        <Dialog open={open}>
+          <DialogTitle>Image</DialogTitle>
+          <Fragment>
+            <img src={currentImg} alt="not found" style={{ width: "100%" }} />
+          </Fragment>
+          <DialogActions>
+            <Button onClick={() => this.handleClose()} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Fragment>
+    );
   }
 }
 
